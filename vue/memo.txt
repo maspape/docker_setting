@@ -1,0 +1,159 @@
+D:\Vue\Build Web Apps with Vue JS 3 & Firebase\work
+ここでやるCDNでいけると思うのだが
+ちがうようなら昔作ったdocker環境を編集する
+
+npm installが必要みたい
+githubからレッスン毎にブランチが切られている
+
+今週は環境構築して終わりかな
+https://github.com/iamshaunjp/Vue-3-Firebase
+最初の方はCDNだけどVueCLIで必要になるみたい
+
+nodeの環境でフォルダ毎にnpm installでよさそう
+section2まではdocker環境いらなさそう
+
+
+
+Dockerfile
+	FROM node:alpine
+	# ワーキングディレクトリを作成
+	WORKDIR /work
+	RUN npm install -g @vue/cli
+	
+docker-compose.yml
+	version: "3"
+	services:
+	    vue_study:
+	        build: .
+	        container_name: "vue_study"
+	        ports:
+	            - 8000:8000
+	        volumes:
+	            - ./work:/work
+	        tty: true
+	
+	vue cliのインストールやや時間かかる
+
+
+プロジェクトの作成
+	vue create プロジェクト名
+	
+	Vue CLI v5.0.6
+	? Please pick a preset: 
+	  Default ([Vue 3] babel, eslint) 
+	  Default ([Vue 2] babel, eslint) 
+	❯ Manually select features 
+	
+	Manually~を選択
+	
+	? Please pick a preset: Manually select features
+	? Check the features needed for your project: (Press <space> to select, <a> to toggle all, <i> to invert selection, and <enter> to proceed)
+	 ◉ Babel
+	 ◯ TypeScript
+	 ◯ Progressive Web App (PWA) Support
+	 ◯ Router
+	 ◯ Vuex
+	 ◯ CSS Pre-processors
+	❯◯ Linter / Formatter
+	 ◯ Unit Testing
+	 ◯ E2E Testing
+	これでエンター
+	
+	? Please pick a preset: Manually select features
+	? Check the features needed for your project: Babel
+	? Choose a version of Vue.js that you want to start the project with (Use arrow keys)
+	❯ 3.x 
+	  2.x 
+	3.xを選ぶ
+	
+	? Please pick a preset: Manually select features
+	? Check the features needed for your project: Babel
+	? Choose a version of Vue.js that you want to start the project with 3.x
+	? Where do you prefer placing config for Babel, ESLint, etc.? (Use arrow keys)
+	❯ In dedicated config files 
+	  In package.json 
+	これでエンター
+	
+	? Please pick a preset: Manually select features
+	? Check the features needed for your project: Babel
+	? Choose a version of Vue.js that you want to start the project with 3.x
+	? Where do you prefer placing config for Babel, ESLint, etc.? In dedicated config files
+	? Save this as a preset for future projects? (y/N) N
+	Nにしておく
+	
+	? Please pick a preset: Manually select features
+	? Check the features needed for your project: Babel
+	? Choose a version of Vue.js that you want to start the project with 3.x
+	? Where do you prefer placing config for Babel, ESLint, etc.? In dedicated config files
+	? Save this as a preset for future projects? No
+	? Pick the package manager to use when installing dependencies: 
+	  Use Yarn 
+	❯ Use NPM 
+	npmにしておく
+	
+	Routerとかも後半のセクションで使う
+	プロジェクトフォルダに移動して
+	
+	code .
+	でVSCodeが起動するがdockerなのでリモートでやる
+	npm run serve
+	でブラウザ起動
+	dockerの環境では8000番だけど8080でアクセスできるみたい
+	
+	まえにVueの環境構築したときより簡単にできた
+	
+	自動更新はReactと同じようにしないとダメかも
+	→同じことしてるけどダメ
+	通常はデフォルトで有効なようなのでdockerの問題か？
+	
+	プロジェクト単位でvolumeをマウントすれば行けるみたいだけど
+	フォルダ分けてプロジェクト作るような場合はダメ
+	
+	vue.config.js
+		        environment:
+		            - CHOKIDAR_USERPOLING=true
+		これがうまく効いてないだけかもしれない
+		buildしなおしてもダメ
+	vue.config.js
+		module.exports = defineConfig({
+		    transpileDependencies: true,
+		    configureWebpack: {
+		        watchOptions: {
+		            poll: true,
+		        },
+		    },
+		});
+		白抜き部を追加して監視を有効にした
+		ようやくできた
+	
+VSCode拡張機能
+	Path AutoComplete
+	Prettier
+	Vetur
+	
+	こっちもReact同様prettierがうまく動かない
+	eslintと設定ファイルが必要みたい
+	https://qiita.com/kokogento/items/b939fc3664d46b724d3e
+	
+	設定変えたのでPrettier動く
+	Veturも動いてるように思う
+	
+	
+2022.8.7
+	VScodeでは
+	vueでスニペットが出る
+	デフォルトのテンプレート
+	
+2022.11.6
+	講座の途中で入れたパッケージは復習時に整理する
+	section13で
+	npm install date-fns
+	
+
+
+2022.11.13
+	npm install firebase-tools
+	を入れた
+	
+	
+	これを入れた

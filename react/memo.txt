@@ -1,0 +1,116 @@
+D:\React\React - The Complete Guide (incl Hooks, React Router, Redux)\work
+の下にセクションごとにフォルダを作る
+
+javascriptはdocker環境いらない
+セクションごとにサンプルファイルをDLする
+
+2022.6.19
+Completeで作ったReact環境を変えて作る
+Dockerfile
+	FROM node:alpine
+	# ワーキングディレクトリを作成
+	WORKDIR /work
+	# アプリケーションの依存関係をインストールする
+	COPY package*.json ./
+	# RUN npx create-react-app /my-app
+	# アプリケーションのソースをバンドル
+	COPY . .
+docker-comose.yml
+	version: "3"
+	services:
+	    react_study:
+	        build: .
+	        container_name: "react_study"
+	        ports:
+	            - 3000:3000
+	        volumes:
+	            - ./work:/work
+	        tty: true
+
+	とりあえずこれで
+	react自体のインストールは講座を見てから
+	
+	RUN npm install
+	これで怒られたので消した
+	→これはpackage.jsonがないから
+	
+2022.6.26
+	section3でDLしたファイルを下記に置く
+	D:\React\React - The Complete Guide (incl Hooks, React Router, Redux)\react_study\work\section3\01-starting-setup
+	ここでnpm install
+	とすればよいはず
+	
+	npm startで起動
+	node17以降webpackのバグ？か何かでエラーがでるので
+	export NODE_OPTIONS=--openssl-legacy-provider
+	を設定
+	
+	ブラウザに反映
+		更新したコードの反映が自動ではないようなのでここ参照
+		https://qiita.com/ape/items/a4268e991211c1e154af
+	
+	前述の設定含めて環境変数に設定する
+docker-compose.yml
+	        environment:
+	            - CHOKIDAR_USEPOLLING=true
+	
+Dockerfile
+	RUN  export NODE_OPTIONS=--openssl-legacy-provider
+	こっちは環境変数だとうまくいかなかったのでDockerfileに記述
+	したけどうまくいかない
+	ENV NODE_OPTIONS=--openssl-legacy-provider
+	これでどうだ？
+docker-composer.yml
+	
+	        environment:
+	            CHOKIDAR_USEPOLLING: "true"
+	            NODE_OPTIONS: "--openssl-legacy-provider"
+	複数書くときはこうするみたい
+	だけどだめ
+	自動更新はできた
+	
+	しょうがないので
+	package.json
+		  "scripts": {
+		    "start": "react-scripts --openssl-legacy-provider start",
+		    "build": "react-scripts --openssl-legacy-provider build",
+		こうした
+	これでOK
+
+2022.7.24追記
+	react-script 5.X.X以降は
+	  "scripts": {
+	    "start": "WATCHPACK_POLLING=true react-scripts start",
+	こうしないとダメ（下記の記事。ありがたいなぁ）
+	https://qiita.com/chora_8192/items/c5838a343a17ccb44d24
+	
+	最初の起動に時間はかかる
+	
+本編にも書いてるがプロジェクトの作成
+	npx create-react-app my-app
+	cd my-app
+	npm start
+	
+	installを促されたらy
+	これで起動
+	
+2022.7.2
+VSCode拡張機能
+	Path AutoComplete
+	Prettier
+	入れた
+	JSXはうまく動かないかも
+	.prettirerrcを作ったけどうまくいかない
+	また来週
+	
+	CSSが意図しない箇所で改行される
+	→prettierrcを編集した後再起動したら直った
+	
+2022.8.13
+	環境コピーしてもnpm initいらないみたい
+
+2022.9.10
+	lit-plugin
+	これを入れるとstyled-componentsで
+	``の中にcss書いてもハイライトされる
+	

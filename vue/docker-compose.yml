@@ -1,0 +1,10 @@
+version: "3"
+services:
+    vue_study:
+        build: .
+        container_name: "vue_study"
+        ports:
+            - 8000:8000
+        volumes:
+            - ./work:/work
+    tty: true

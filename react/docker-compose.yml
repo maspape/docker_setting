@@ -1,0 +1,10 @@
+version: "3"
+services:
+    react_study:
+        build: .
+        container_name: "react_study"
+        ports:
+            - 3000:3000
+        volumes:
+            - ./work:/work
+    tty: true

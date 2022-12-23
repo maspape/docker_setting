@@ -1,0 +1,8 @@
+version: '3'
+services:
+  vim_env:
+    build: .
+    working_dir: "/vim_env"
+    tty: true
+    volumes:
+    - ./vim_env:/vim_env

@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+    node-bootcamp:
+        build: ./node-prj
+        container_name: "node-bootcamp"
+        ports:
+            - 8080:8080
+        links:
+            - mongo
+        depends_on:
+            - mongo
+        volumes:
+            - ./node-prj:/node-prj
+            # - /home/app/nodeapp/node_modules
+        tty: true
+
+    mongo:
+        image: mongo
+        container_name: "mongo-node-prj"
+        command:
+            - mongod
+        ports:
+            - 27017:27017
+        volumes:
+            - mongo-data:/data/db
+
+    mongo-data:
+        image: busybox
+        tty: true
+
+volumes:
+    mongo-data:

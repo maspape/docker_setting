@@ -1,0 +1,95 @@
+Dockerfile
+	FROM alpine
+	WORKDIR /work
+	ENV TZ=Asia/Tokyo
+	RUN apk update && \
+	    apk add git
+	RUN apk add vim
+	RUN apk add --no-cache python3 py3-pip
+	RUN apk add curl
+	RUN apk add sudo
+	RUN apk add cmake
+	RUN apk add python3-dev
+	RUN apk add build-base
+	RUN apk add linux-headers
+	
+docker-compose.yml
+	version: '3'
+	services:
+	  vim_env:
+	    build: .
+	    working_dir: "/vim_env"
+	    tty: true
+	    volumes:
+	      - ./vim_env:/vim_env
+
+
+もろもろ設定
+	.vimrc
+		コピペ
+	pathogen
+		mkdir -p .vim/autoload
+		mkdir -p .vim/bundle
+		curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/patogen.vim
+		
+		curlがないので
+		apk add curl
+		Dockerfileに追記しておく
+		
+		この時点で
+		./vimをgit init
+		git add *
+		git commit -m "initial commit"
+	ultisnips
+		cd ~/.vim/bundle
+		git submodule add https://github.com/SirVer/ultisnips.git ultisnips.vim
+		git submodule add https://github.com/honza/vim-snippets vim-snippets.vim
+		
+		mkdir -p ~/.vim/ftdetect/
+		ln -s ~/.vim/bundle/ultisnips.vim/ftdetect/* ~/.vim/ftdetect/
+		
+		.vimrcに
+		set runtimepath+=~/.vim/bundle/ultisnips.vim
+	 
+		let g:UltiSnipsExpandTrigger="<tab>"
+		let g:UltiSnipsJumpForwardTrigger="<c-b>"
+		let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+		
+		:so ~/.vimrcで反映
+
+		ヘルプの登録
+		:helptags ~/.vim/bundle/ultisnips.vim/doc
+		ヘルプファイルが見つからないと言われる
+		
+	
+動作確認
+	VSCodeからだとやりずらいので
+	コマンドプロンプトからコンテナに入る
+	vimを起動するとlistcharの値がコンフリクトしてると言われるが・・・
+	
+	コマンドプロンプトからだと
+	Caps LockをCtrlとして認識しない？
+	別のキーバインドが効いてると思われる・・・
+	VSCodeも同じかな？
+	一度<C-q>を押す
+	
+	:UltsnipsEditで拡張子に対応スニペットが表示される
+	
+emmet
+	cd ~/.vim
+	git submodule add https://github.com/mattn/emmet-vim.git bundle/emmet-vim
+	
+MRU
+	cd ~/.vim
+	git submodule add https://github.com/vim-scripts/mru.vim.git bundle/mru.vim
+	
+YouCompleteMe
+	pythonは必須
+	git submodule add https://github.com/Valloric/YouCompleteMe bundle/YouCompleteMe
+	cd bundle/YouCompleteMe
+	git submodule update --init --recursive
+	./install.py --force-sudo
+	で強制実行する
+	引数で言語を指定できるが--allにするとgolang用のものがなくてエラーになる(gopls)
+	
+	sudoが必要なのとcmake、python3-devもいる（Dockerfileに追記済み）

@@ -1,0 +1,160 @@
+D:\Node\Node.js, Express, MongoDB & More The Complete Bootcamp 2022\node-prj
+ここにDLしたファイルを置いてdockerのNode環境でやる
+
+2022.6.11
+復習環境をいじって使う
+nodeはalpineの最新バージョン
+
+	
+	こんな階層
+	
+	Dockerfile
+	FROM node:alpine
+	# ワーキングディレクトリを作成
+	WORKDIR /usr/src/app
+	# アプリケーションの依存関係をインストールする
+	COPY package*.json ./
+	RUN npm install
+	# アプリケーションのソースをバンドル
+	COPY . .
+	# アプリケーションを起動
+	# CMD [ "node", "app.js"]
+	
+	src/appはいらないな
+	
+	docker-compose.yml
+	version: "3"
+	services:
+	    node-bootcamp:
+	        build: ./node-prj
+	        container_name: "node-bootcamp"
+	        ports:
+	            - 8080:8080
+	        links:
+	            - mongo
+	        depends_on:
+	            - mongo
+	        volumes:
+	            - ./node-prj:/node-prj
+	            # - /home/app/nodeapp/node_modules
+	        tty: true
+	    mongo:
+	        image: mongo
+	        container_name: "mongo-node-prj"
+	        command:
+	            - mongod
+	        ports:
+	            - 27017:27017
+	        volumes:
+	            - mongo-data:/data/db
+	    mongo-data:
+	        image: busybox
+	        tty: true
+	volumes:
+	    mongo-data:
+	mongoのコンテナ名が重複してたので名前を変える
+	
+	docker-compose up -d
+	で生成
+	コンテナnode-bootcampに入る
+	node -vで実行できた
+	
+	
+	complete-node-bootcamp-master
+	が講座のDLファイル群
+	ここに移動してnpm initでいけるでしょう
+	
+	拡張機能はおいおい
+	
+	PrettierとPath Autocompleteは入れた
+	
+	
+	コンテナは8080にしてるけど
+	解説のままに
+	server.listen(8000, "127.0.0.1", () => {
+	これでアクセスできるのはなぜだろう・・・
+	コンテナとは別に8000を開いたということか？
+
+2022.7.9
+	prettierが効かないのはVueとかReactで書いたのと同じ症状
+	1度効いたような気がするのだが・・・
+	
+2022.7.16
+	prettierが効かなかったのはなぜか無効になってたから
+	2022の環境構築>VSCode参照
+	
+	tabwidthがなぜか2になる
+	.prettierrcで無理やり4にした
+	
+	jsonファイルを整形するのもsetting.jsonに記載しないとだめ
+	これも2022の環境構築>VSCode参照
+	
+	postmanはdesktop用　agentが毎回起動されるのか？
+	再起動して確認してみる
+	起動する
+2022.7.23
+	nodemonやmorgan,expressは講座の中で手動で入れている
+
+
+2022.7.30
+	npm i dotenv
+	をインストール
+	
+2022.8.6
+	ESLintを入れる
+	
+	他にも
+	npm i eslint prettier eslint-config-prettier eslint-pl
+	ugin-prettier eslint-config-airbnb eslint-plugin-node eslint-plugin-import esl
+	int-plugin-jsx-a11y eslint-plugin-react --save-dev
+	かなり入れた
+	
+	ディレクトリかえてもここのpackage.jsonに入る
+	いろんなエラーがでるようになった
+	2022.9.19
+	ここは再構築したら消えてるかもと思ったけど
+	package.jsonに入ってる
+	
+2022.8.13
+	npm i mongoose
+	でmongooseを入れる
+	
+2022.9.10
+	eslintがnodeのversion依存のワーニングが出るのでうざい
+	package.json
+		    "engines": {
+		        "node": ">=9.0.0"
+		    }
+		を記述した
+		ファイルの再読み込みで出なくなると思われる
+2022.10.15
+	nodemonの監視対象を増やしたいのだが・・・
+	wathchオプションではだめか？
+	.とか./ではダメ
+		
+		"start": "nodemon --legacy-watch server.js",
+		githubのオフィシャルを見て
+		これでできた
+		コンテナとかのきはこれかな？
+		-Lでもよいみたい
+		
+	npm install bycryptjs
+	をインストール
+	グローバルじゃないから書かなくてもよいかな
+	
+2022.11.12
+	npm install nodemailer
+	でメール送るモジュールをインストール
+	
+2022.11.26
+	npm install express-rate-limit
+	アクセス制限のモジュール
+	
+	npm install helmet
+	npm i express-mongo-sanitize
+	npm i xss-clean
+	この辺がサニタイズのパッケージ
+2022.12.2
+	npm install hpp
+	を入れる
+	

@@ -1,0 +1,5 @@
+	Jupyter
+	Pylance
+	Python
+	intent rainbow
+を入れる
